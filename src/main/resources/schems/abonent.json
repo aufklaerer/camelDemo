@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "firstName",
+    "lastName",
+    "codePhone",
+    "workPhone",
+    "mobilePhone",
+    "email"
+  ],
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "maxLength": 10
+    },
+    "lastName": {
+      "type": "string",
+      "maxLength": 20
+    },
+    "codePhone": {
+      "type": "string",
+      "pattern": "^[0-9]{3}$"
+    },
+    "workPhone": {
+      "type": "string",
+      "pattern": "^[0-9]{3}-[0-9]{2}-[0-9]{2}$"
+    },
+    "mobilePhone": {
+      "type": "string",
+      "pattern": "^[0-9]{3}-[0-9]{2}-[0-9]{2}$"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    }
+  }
+}

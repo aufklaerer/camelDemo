@@ -1,0 +1,10 @@
+camel:
+  springboot:
+    main-run-controller: true
+
+spring:
+  thymeleaf:
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
