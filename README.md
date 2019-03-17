@@ -7,12 +7,24 @@
 
 Для сборки проекта требуется иметь установленные git (установка для Mac brew install mvn), java8 (https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) и maven (установка для Mac brew install maven, страница установки brew - https://docs.brew.sh/Installation) и выполнить следующую последовательность команд:
 
+В файле abonents.csv содержатся данные для справочника абонентов, для обогощения отправляемых данных.
+
 git clone https://github.com/aufklaerer/camelDemo.git
 
 cd camelDemo
 
 mvn clean install
 
+cp abonents.csv target
+
 cd target
 
 java -jar camel-0.1.jar
+
+Либо выполнить выгрузку репозитория в локальную директорию и скрипт, выполняющий вышеприведенные команды и запускающий приложение.
+
+git clone https://github.com/aufklaerer/camelDemo.git
+
+cd camelDemo
+
+sh start.sh
