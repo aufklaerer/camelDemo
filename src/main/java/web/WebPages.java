@@ -5,9 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class WebPages {
+public final class WebPages {
     @RequestMapping(value = "/")
-    public String form(Model model) {
+    public String form(final Model model) {
         return "form";
     }
 }

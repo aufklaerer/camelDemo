@@ -36,7 +36,7 @@ public class CamelTests {
                     @Override
                     public void configure() throws Exception {
                         replaceFromWith(MOCK_TIMER);
-                        interceptSendToEndpoint("log*")
+                        interceptSendToEndpoint("file*")
                                 .skipSendToOriginalEndpoint()
                                 .to(MOCK_RESULT);
                     }

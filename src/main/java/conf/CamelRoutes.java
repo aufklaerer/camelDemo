@@ -1,7 +1,7 @@
 package conf;
 
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,37 +12,54 @@ public class CamelRoutes extends RouteBuilder {
     public static final String MOVE_ROUTE = "MOVE_ROUTE";
     public static final String ENRICH_ROUTE = "ENRICH_ROUTE";
 
-    @Override
-    public void configure() throws Exception {
+    @Value("${camelApp.startRoute}")
+    private String startRoute;
+    @Value("${camelApp.folders.prepareDir}")
+    private String prepareDir;
+    @Value("${camelApp.folders.workDir}")
+    private String workDir;
+    @Value("${camelApp.folders.dataDir}")
+    private String dataDir;
+    @Value("${camelApp.folders.invalidDir}")
+    private String invalidDir;
+    @Value("${camelApp.folders.doneDir}")
+    private String doneDir;
 
-        from("direct:receiver")
+    @Override
+    public final void configure() throws Exception {
+
+        from("direct:" + startRoute)
                 .routeId(RECEIVER_ROUTE)
                 .log("Received data ${body}")
-                .to("file:prepare?fileName=json_${date:now:ddmmyyyy_hhmm}.txt" +
-                        "&fileExist=Move" +
-                        "&moveExisting=${file:name.noext}_${date:now:ssSSS}.${file:ext}");
+                .to("file:" + prepareDir
+                        + "?fileName=json_${date:now:ddmmyyyy_hhmm}.txt"
+                        + "&fileExist=Move"
+                        + "&moveExisting=${file:name.noext}_${date:now:ssSSS}"
+                        + ".${file:ext}");
 
-        from("file:prepare?delete=true&delay=5000")
+        from("file:" + prepareDir + "?delete=true")
                 .routeId(MOVE_ROUTE)
-                .to("file:work")
-                .to("file:work?doneFileName=${file:name.noext}.ready")
+                .to("file:" + workDir)
+                .to("file:" + workDir
+                        + "?doneFileName=${file:name.noext}.ready")
                 .to("log:file moved");
 
-        from("file:work?delete=true" +
-                    "&doneFileName=${file:name.noext}.ready&delay=5000")
+        from("file:" + workDir + "?delete=true"
+                    + "&doneFileName=${file:name.noext}.ready")
                 .routeId(PROCESS_ROUTE)
                 .doTry()
                     .to("json-validator:schems/abonent.json")
                     .log("Processed successfully.")
-                    .to("file:data")
+                    .to("file:" + dataDir)
                 .endDoTry()
                 .doCatch(Exception.class)
                     .log("Filed to process. File filed to validate.")
-                    .to("file:invalid");
+                    .to("file:" + invalidDir);
 
-        from ("file:data?delay=5000")
+        from("file:" + dataDir + "?delete=true")
                 .routeId(ENRICH_ROUTE)
-                .process("payloadProcessor");
-
+                .process("payloadProcessor")
+                .to("file:" + doneDir)
+                .log("Processed data ${body}");
     }
 }

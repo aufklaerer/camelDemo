@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = {"conf", "web"})
+@SpringBootApplication(scanBasePackages = {"conf", "web", "enrich"})
 public class Application {
     @Autowired
-    CamelContext camelContext;
+    private CamelContext camelContext;
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         SpringApplication.run(Application.class, args);
     }
 }
